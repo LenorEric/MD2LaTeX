@@ -112,3 +112,14 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+#Test File
+*.tex
+test.md
+
+#Release
+*.zip
+*.7z
+
+#IDE
+/.idea/

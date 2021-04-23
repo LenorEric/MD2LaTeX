@@ -2,7 +2,9 @@ import re
 
 
 def envRecognizer(tokens):
-    if tokens[0] == "##":
+    if tokens[0] == "#":
+        return ["part"]
+    elif tokens[0] == "##":
         return ["Section", 0]
     elif tokens[0] == "###":
         return ["Section", 1]

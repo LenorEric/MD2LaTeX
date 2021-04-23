@@ -56,7 +56,7 @@ LenorEric
 
 > 目标种类：表格
 >
-> Type:"Table"
+> Type:"Tabular"
 >
 > Properties:{"Align":"\[l/c/r]……"}
 >
@@ -79,6 +79,16 @@ LenorEric
 > Properties:{}
 >
 > Content:[Line,……]
+
+> 目标种类：区块
+>
+> Type:"Quotation"
+>
+> Properties:{}
+>
+> Content:[Line,……]
+>
+> 备注：在Markdown中区块将被翻译为LaTeX中的引用
 
 ## LaTeX-ST规则
 

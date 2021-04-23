@@ -60,7 +60,7 @@ LenorEric
 >
 > Properties:{"Align":"\[l/c/r]……"}
 >
-> Content:[[Cell,……]，……]
+> Content:\[Caption,[[Cell,……]，……]]
 >
 > 备注：表头记得用\\textbf{Cell}加粗哦
 

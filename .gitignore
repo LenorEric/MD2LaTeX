@@ -116,6 +116,7 @@ dmypy.json
 #Test File
 *.tex
 test.md
+*.vsdx
 
 #Release
 *.zip

@@ -1,29 +1,30 @@
 # -*- coding: UTF-8 -*-
 
-import re
+import Recognizer
 from sys import exit
 
 fileName = "test.md"
 
 headers = (
     "\\documentclass{ctexart}",
-    "\n",
+    "",
     "\\usepackage[hmargin=1.25in,vmargin=1in]{geometry}",
     "\\usepackage{graphicx}",
     "\\usepackage{float}",
     "\\usepackage{CJKulem}",
-    "\n"
+    ""
 )
 
 docHeaders = (
     "\\maketitle",
-    "\n",
+    "",
     "\\tableofcontents",
-    "\n",
+    "",
     "\\thispagestyle{empty}",
     "\\newpage",
     "\\pagestyle{plain}",
-    "\\setcounter{page}{1}"
+    "\\setcounter{page}{1}",
+    ""
 )
 
 title = ""
@@ -38,7 +39,7 @@ def makeLine(line):
 
 def fPrintln(*args):
     word = ''.join(map(str, args))
-    word = (max(len(stack) - 1, 0) + sectionCount) * "    " + word
+    word = (max(len(stack) - 1, 0) + sectionLevel) * "    " + word
     print(word)
     latexFile.write(word)
     latexFile.write('\n')
@@ -46,24 +47,47 @@ def fPrintln(*args):
 
 class MDFile:
     data = ""
-    point = 0
+    point = -1
+
+    def remain(self):
+        if self.point + 1 == len(self.data):
+            return False
+        else:
+            return True
 
     def fReadln(self):
         self.point += 1
-        return self.data[self.point - 1]
+        return self.data[self.point]
+
+    def fReadNextln(self):
+        self.point += 1
+        while self.data[self.point] == "":
+            self.point += 1
+        return self.data[self.point]
 
 
 stack = []
-sectionCount = 0
+sectionLevel = 0
 
 
-def newEnv(env):
+def newEnv(env, pro=""):
     stack.append(env)
-    fPrintln("\\begin{", env, '}')
+    if pro == "":
+        fPrintln("\\begin{", env, '}')
+    else:
+        fPrintln("\\begin{", env, "}[", pro, ']')
 
 
 def endEnv():
     fPrintln("\\end{", stack.pop(), '}')
+
+
+def process():
+    buffer = []
+    ASTP = []
+    buffer.append(md.fReadNextln())
+    env = Recognizer.envRecognizer(buffer[len(buffer)-1].split())
+    print(env)
 
 
 if __name__ == '__main__':
@@ -75,7 +99,7 @@ if __name__ == '__main__':
         fileName = fileName[:len(fileName) - 3]
     try:
         mdFile = open(fileName + '.md', "r", encoding="utf-8")
-        mdData = mdFile.read().split("\n")
+        mdData = mdFile.read().splitlines()
         mdFile.close()
         md = MDFile()
         md.data = mdData
@@ -88,7 +112,9 @@ if __name__ == '__main__':
     title = md.fReadln().split()
     if title[0] == '#':
         title = ' '.join(title[1:len(title)])
-    author = md.fReadln()
+    else:
+        title = ' '.join(title)
+    author = md.fReadNextln()
     fPrintln("\\title{", title, "}")
     fPrintln("\\author{", author, '}')
     makeLine(1)
@@ -98,6 +124,9 @@ if __name__ == '__main__':
     newEnv("document")
     for ele in docHeaders:
         fPrintln(ele)
+
+    while md.remain():
+        process()
 
     while stack:
         endEnv()

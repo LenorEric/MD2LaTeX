@@ -18,7 +18,7 @@ LenorEric
 3. MD正文中二级标题对应LaTeX中的一级标题。正文最多可拥有三个标题等级，即最多使用到LaTeX的三级标题。
 5. 标题等级请使用“#”作为标识符。
 5. 除行末外，不要有两个及以上的连续空格，否则会被识别为单个空格。
-6. 插入图片请使用\<img src=path width=percent>的格式。如没有\<center>标签，转换后的图片不会自动居中。
+6. 插入图片请使用\<img src=path width=percent>的格式。如没有\<center>标签，转换后的图片不会自动居中。通常转换后的表格默认居中（因为MD中表格只能居中）。
 7. 如果表格、图片需要插入编号，请在其紧接下来的一行用\<center>\</center>标签加入名称，且不加编号。
 8. 行末双空格换行将没有首行缩进，而空行换行则有。
 9. 在标识符如\>（区块）后加入一个空格。
@@ -30,4 +30,67 @@ LenorEric
 ## 软件架构
 
 <center><img src=".//img//SoftArch.png" width="90%"></center>
+
+## MD-AST规则
+
+​		MD中的每一个环境对应一条MD-AST。其中，一条MD-AST由一个列表（或元组）构成，结构为：
+
+[Type, Properties, Content]。其中，Type为一字符串，Properties为一字典，Content为一列表。根据其类型的不同， 有着不同的Properties和Content规则。注意，大部分不同环境之间可以在Content中相互嵌套。
+
+​		以下是目前已经规定的MD-AST规则：
+
+> 目标种类：普通文本
+>
+> Type：“PlainText”
+>
+> Properties：{}
+> Content：[ContentString]
+
+> 目标种类：图片
+>
+> Type:"Image"
+>
+> Properties:{"Centering": [0/1]}
+>
+> Content:[Source, Width, Caption]
+
+> 目标种类：表格
+>
+> Type:"Table"
+>
+> Properties:{"Align":"\[l/c/r]……"}
+>
+> Content:[[Cell,……]，……]
+>
+> 备注：表头记得用\\textbf{Cell}加粗哦
+
+> 目标种类：有序列表
+>
+> Type:"Enumerate"
+>
+> Properties:{}
+>
+> Content:[Line, ……]
+
+> 目标种类：无序列表
+>
+> Type: "Itemize"
+>
+> Properties:{}
+>
+> Content:[Line,……]
+
+## LaTeX-ST规则
+
+​		为了方便起见，使用LaTeX-ST作为中间语言传入主程序，再由主程序转为LaTeX标准语法。这样做的理由是保证拓展性的同时，可以由主程序进行首行缩进等操作。LaTeX-ST的规则极为接近LaTeX语法，每一个LaTeX-ST代表一行多多行LaTeX语句。通常其结构为：
+
+[[Type, Content],……]。其中，Type和Content均为一字符串。Content为LaTeX中的语法内容。
+
+​		以下是已经规定的Type种类：
+
+> "Cmd": 即单独使用一条\Command来表达的指令
+>
+> "Env": 即需要使用\\begin{Environment} \\end{Environment}来表达的环境
+>
+> "Text": 即一个普通的字符串
 

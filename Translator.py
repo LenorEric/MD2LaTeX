@@ -9,7 +9,7 @@ def textRenderer(text):
 
 def trans(AST):
     if AST[0] == "Image":
-        return ST.OTrans(AST)
+        return ST.transImage(AST)
 
 
 if __name__ == '__main__':

@@ -50,6 +50,9 @@ class MDFile:
     data = ""
     point = -1
 
+    def back(self, line=1):
+        self.point -= line
+
     def remain(self):
         if self.point + 1 == len(self.data):
             return False
@@ -72,15 +75,22 @@ sectionLevel = 0
 
 
 def newEnv(env, pro=""):
-    stack.append(env)
     if pro == "":
         fPrintln("\\begin{", env, '}')
     else:
-        fPrintln("\\begin{", env, "}[", pro, ']')
+        fPrintln("\\begin{", env, "}", pro)
+    stack.append(env)
 
 
-def endEnv():
-    fPrintln("\\end{", stack.pop(), '}')
+def endEnv(end=""):
+    if end == "":
+        fPrintln("\\end{", stack.pop(), '}')
+        makeLine(1)
+    elif end != stack.pop():
+        print("Error")
+    else:
+        fPrintln("\\end{", end, '}')
+        makeLine(1)
 
 
 def compositorPrinter(LaTeX_SP):
@@ -88,7 +98,7 @@ def compositorPrinter(LaTeX_SP):
         if line[0] == "Cmd":
             fPrintln(line[1])
         elif line[0] == "Env":
-            if len(line[1]) == 1:
+            if type(line[1]) == str:
                 endEnv()
             else:
                 newEnv(line[1][0], line[1][1])
@@ -96,44 +106,38 @@ def compositorPrinter(LaTeX_SP):
             fPrintln(line[1])
 
 
-ret = [
-    ["Env", ["figure", "ht"]],
-    ["Cmd", "\\centering"],
-    ["Cmd", "\includegraphics[width=0.5\textwidth]{img//img3.png}"],
-    ["Cmd", "\caption{软件流程图}"],
-    ["Env", ["figure"]]
-]
-
-
 def process():
     def specialProcesser(tokens, preEnv):
-        parse = Recognizer.parser(tokens, preEnv)
-        LaTeX_SP = Translator.trans(parse)
-        compositorPrinter(ret)
+        buffer = [tokens]
+        while Recognizer.envRecognizer(buffer[len(buffer) - 1].split()) == ["Special", preEnv]:
+            buffer.append(md.fReadln())
+        if preEnv == "HTML":
+            parse = Recognizer.parser(buffer, preEnv)
+            LaTeX_ST = Translator.trans(parse)
+            compositorPrinter(LaTeX_ST)
 
-    buffer = md.fReadln()
-    if buffer == "":
+    temp = md.fReadln()
+    if temp == "":
         makeLine(1)
         return
-    env = Recognizer.envRecognizer(buffer.split())
+    env = Recognizer.envRecognizer(temp.split())
     if env[0] == "Special":
-        specialProcesser(buffer, env[1])
+        specialProcesser(temp, env[1])
     elif env[0] == "Section":
         global sectionLevel
         sectionLevel = env[1] - 1
         if env[1] == 1:
-            makeLine(1)
-            fPrintln("\\section{", ' '.join(buffer.split()[1:]), "}")
+            fPrintln("\\section{", ' '.join(temp.split()[1:]), "}")
         elif env[1] == 2:
-            fPrintln("\\subsection{", ' '.join(buffer.split()[1:]), "}")
+            fPrintln("\\subsection{", ' '.join(temp.split()[1:]), "}")
         elif env[1] == 3:
-            fPrintln("\\subsubsection{", ' '.join(buffer.split()[1:]), "}")
+            fPrintln("\\subsubsection{", ' '.join(temp.split()[1:]), "}")
         sectionLevel += 1
     elif env[0] == "PlainText":
-        fPrintln(Translator.textRenderer(buffer))
+        fPrintln(Translator.textRenderer(temp))
     elif env[0] == "Part":
         sectionLevel = 0
-        fPrintln("\\part{", ' '.join(buffer.split()[1:]), "}")
+        fPrintln("\\part{", ' '.join(temp.split()[1:]), "}")
 
 
 if __name__ == '__main__':

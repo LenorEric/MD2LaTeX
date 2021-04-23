@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 
 import Recognizer
+import Translator
 from sys import exit
 
 fileName = "test.md"
@@ -82,12 +83,57 @@ def endEnv():
     fPrintln("\\end{", stack.pop(), '}')
 
 
+def compositorPrinter(LaTeX_SP):
+    for line in LaTeX_SP:
+        if line[0] == "Cmd":
+            fPrintln(line[1])
+        elif line[0] == "Env":
+            if len(line[1]) == 1:
+                endEnv()
+            else:
+                newEnv(line[1][0], line[1][1])
+        elif line[0] == "Text":
+            fPrintln(line[1])
+
+
+ret = [
+    ["Env", ["figure", "ht"]],
+    ["Cmd", "\\centering"],
+    ["Cmd", "\includegraphics[width=0.5\textwidth]{img//img3.png}"],
+    ["Cmd", "\caption{软件流程图}"],
+    ["Env", ["figure"]]
+]
+
+
 def process():
-    buffer = []
-    ASTP = []
-    buffer.append(md.fReadNextln())
-    env = Recognizer.envRecognizer(buffer[len(buffer)-1].split())
-    print(env)
+    def specialProcesser(tokens, preEnv):
+        parse = Recognizer.parser(tokens, preEnv)
+        LaTeX_SP = Translator.trans(parse)
+        compositorPrinter(ret)
+
+    buffer = md.fReadln()
+    if buffer == "":
+        makeLine(1)
+        return
+    env = Recognizer.envRecognizer(buffer.split())
+    if env[0] == "Special":
+        specialProcesser(buffer, env[1])
+    elif env[0] == "Section":
+        global sectionLevel
+        sectionLevel = env[1] - 1
+        if env[1] == 1:
+            makeLine(1)
+            fPrintln("\\section{", ' '.join(buffer.split()[1:]), "}")
+        elif env[1] == 2:
+            fPrintln("\\subsection{", ' '.join(buffer.split()[1:]), "}")
+        elif env[1] == 3:
+            fPrintln("\\subsubsection{", ' '.join(buffer.split()[1:]), "}")
+        sectionLevel += 1
+    elif env[0] == "PlainText":
+        fPrintln(Translator.textRenderer(buffer))
+    elif env[0] == "Part":
+        sectionLevel = 0
+        fPrintln("\\part{", ' '.join(buffer.split()[1:]), "}")
 
 
 if __name__ == '__main__':
@@ -128,6 +174,7 @@ if __name__ == '__main__':
     while md.remain():
         process()
 
+    sectionLevel = 0
     while stack:
         endEnv()
     latexFile.close()

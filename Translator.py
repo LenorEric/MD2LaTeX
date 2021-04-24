@@ -8,8 +8,7 @@ def textRenderer(text):
 
 
 def trans(AST):
-    if AST[0] == "Image":
-        return ST.transImage(AST)
+    return ST.divider(AST)
 
 
 if __name__ == '__main__':

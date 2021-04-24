@@ -115,7 +115,7 @@ def compositorPrinter(LaTeX_SP):
 def process():
     def specialProcesser(tokens, preEnv):
         buffer = [tokens]
-        while buffer[len(buffer)-1] != "":
+        while buffer[len(buffer) - 1] != "":
             buffer.append(md.fReadln())
         if preEnv == "HTML":
             parse = Recognizer.parser(buffer, preEnv)

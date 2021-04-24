@@ -3,7 +3,7 @@ import SubParser as SP
 
 
 def envRecognizer(tokens):
-    if not(tokens):
+    if not (tokens):
         return ["PlainText"]
     if tokens[0] == "#":
         return ["Part"]

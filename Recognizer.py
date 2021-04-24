@@ -29,7 +29,7 @@ def envRecognizer(tokens):
         return ["PlainText"]
 
 
-# asdf
+a = 1
 
 def parser(tokens, types):
     if types == "HTML":

@@ -146,7 +146,7 @@ def process():
         fPrintln("\\part{", ' '.join(temp.split()[1:]), "}")
 
 
-# asdf
+a = 1
 
 if __name__ == '__main__':
     if fileName == "":

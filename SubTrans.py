@@ -68,16 +68,16 @@ def transQuotation(AST):
 
 def transList(AST):
     if AST[0] == 'Enumerate':
-        type = 'enumerate'
+        _type = 'enumerate'
     else:
-        type = 'itemize'
-    LaTeXST = [['Env', [type, '']]]
+        _type = 'itemize'
+    LaTeXST = [['Env', [_type, '']]]
     for line in AST[2]:
         if type(line) == list:
             LateXST += divider(line)
         else:
             LaTeXST.append(['Cmd', '\item ' + str(line)])
-    LaTeXST.append(['Env', ['\end' + type + '}']])
+    LaTeXST.append(['Env', ['\end{' + _type + '}']])
     return LaTeXST
 
 
@@ -145,7 +145,7 @@ def transFormula(AST):
 # ]
 # print(transTabular(tabular))
 # print(transQuotation(quotation))
-# print(transEnumerate(Enumerate))
+# print(transList(Enumerate))
 # print(transItemize(Enumerate))
 # print(findZh("12@中文12$2"))
 # print('123456'[0:2])

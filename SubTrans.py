@@ -24,7 +24,7 @@ def transImage(AST):
     LaTeX_ST.append(begin)
     if AST[1]["Centering"]:
         LaTeX_ST.append(["Cmd", "\centering"])
-    include = "\includegraphics[width=" + str(AST[2][1]) + "\textwidth]{" + AST[2][0] + "}"
+    include = "\includegraphics[width=" + str(AST[2][1]) + "\\textwidth]{" + AST[2][0] + "}"
     LaTeX_ST.append(["Cmd", include])
     if AST[2][2] != '':
         caption = '\caption{' + AST[2][2] + '}'

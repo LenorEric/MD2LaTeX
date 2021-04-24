@@ -29,8 +29,6 @@ def envRecognizer(tokens):
         return ["PlainText"]
 
 
-a = 1
-
 def parser(tokens, types):
     if types == "HTML":
         cont = SP.html(tokens[0])

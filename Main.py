@@ -146,8 +146,6 @@ def process():
         fPrintln("\\part{", ' '.join(temp.split()[1:]), "}")
 
 
-a = 1
-
 if __name__ == '__main__':
     if fileName == "":
         fileName = input()

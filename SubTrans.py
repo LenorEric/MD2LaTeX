@@ -56,12 +56,6 @@ def transTabular(AST):
     return LaTeXST
 
 
-def transEnumerate(AST):
-    LaTeXST = [['Env', ["enumerate", '']]]
-    for line in AST[2]:
-        LaTeXST.append(['Cmd', '\item ' + str(line)])
-    LaTeXST.append(['Env', ['\end{enumerate}']])
-    return LaTeXST
 
 
 def transQuotation(AST):
@@ -71,13 +65,6 @@ def transQuotation(AST):
     LaTeXST.append(['Env', ['\end{quotation}']])
     return LaTeXST
 
-
-def transItemize(AST):
-    LaTeXST = [['Env', ["itemize", '']]]
-    for line in AST[2]:
-        LaTeXST.append(['Cmd', '\item ' + str(line)])
-    LaTeXST.append(['Env', ['\end{itemize}']])
-    return LaTeXST
 
 def transList(AST):
     if AST[0] == 'Enumerate':

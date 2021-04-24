@@ -4,39 +4,40 @@ def divider(AST):
     elif AST[0] == 'Image':
         return transImage(AST)
 
+
 def template(AST):
-    LaTeXST = AST
-    return LaTeXST
+    LaTeX_ST = AST
+    return LaTeX_ST
 
 
 def transPlainText(AST):
-    LaTeXST = []
+    LaTeX_ST = []
     lines = AST[2]
     for line in lines:
-        LaTeXST.append(['Text', line])
-    return LaTeXST
+        LaTeX_ST.append(['Text', line])
+    return LaTeX_ST
 
 
 def transImage(AST):
-    LaTeXST = []
+    LaTeX_ST = []
     begin = ['Env', ["figure", '[ht]']]
-    LaTeXST.append(begin)
+    LaTeX_ST.append(begin)
     if AST[1]["Centering"]:
-        LaTeXST.append(["Cmd", "\centering"])
+        LaTeX_ST.append(["Cmd", "\centering"])
     include = "\includegraphics[width=" + str(AST[2][1]) + "\textwidth]{" + AST[2][0] + "}"
-    LaTeXST.append(["Cmd", include])
+    LaTeX_ST.append(["Cmd", include])
     if AST[2][2] != '':
         caption = '\caption{' + AST[2][2] + '}'
-        LaTeXST.append(['Cmd', caption])
-    LaTeXST.append(['Env', ['\end{figure}']])
-    return LaTeXST
+        LaTeX_ST.append(['Cmd', caption])
+    LaTeX_ST.append(['Env', ['\end{figure}']])
+    return LaTeX_ST
 
 
 def transTabular(AST):
     _table = {
         'hline': ['Cmd', '\hline']
     }
-    LaTeXST = [['Env', ["table", '[ht]']], ["Cmd", "\centering"]]
+    LaTeX_ST = [['Env', ["table", '[ht]']], ["Cmd", "\centering"]]
     align = AST[1]["Align"]
     coll = []
     for i in range(len(align)):
@@ -44,26 +45,24 @@ def transTabular(AST):
         coll.append(align[i])
     coll.append('|')
     begin = ['Env', ['tabular', '{' + ' '.join(coll) + '}']]
-    LaTeXST.append(begin)
-    LaTeXST.append(_table['hline'])
+    LaTeX_ST.append(begin)
+    LaTeX_ST.append(_table['hline'])
     AST[2][0] = ["\\textbf{" + str(cell) + "}" for cell in AST[2][0]]
     for line in AST[2]:
         cells = ' & '.join([str(cell) for cell in line]) + " \\"
-        LaTeXST.append(['Text', cells])
-        LaTeXST.append(_table['hline'])
-    LaTeXST.append(['Env', ['\end{tabular}']])
-    LaTeXST.append(['Env', ['\end{figure}']])
-    return LaTeXST
-
-
+        LaTeX_ST.append(['Text', cells])
+        LaTeX_ST.append(_table['hline'])
+    LaTeX_ST.append(['Env', ['\end{tabular}']])
+    LaTeX_ST.append(['Env', ['\end{figure}']])
+    return LaTeX_ST
 
 
 def transQuotation(AST):
-    LaTeXST = [['Env', ["quotation", '']]]
+    LaTeX_ST = [['Env', ["quotation", '']]]
     for line in AST[2]:
-        LaTeXST.append(['Text', str(line)])
-    LaTeXST.append(['Env', ['\end{quotation}']])
-    return LaTeXST
+        LaTeX_ST.append(['Text', str(line)])
+    LaTeX_ST.append(['Env', ['\end{quotation}']])
+    return LaTeX_ST
 
 
 def transList(AST):
@@ -71,14 +70,14 @@ def transList(AST):
         _type = 'enumerate'
     else:
         _type = 'itemize'
-    LaTeXST = [['Env', [_type, '']]]
+    LaTeX_ST = [['Env', [_type, '']]]
     for line in AST[2]:
         if type(line) == list:
-            LateXST += divider(line)
+            LaTeX_ST += divider(line)
         else:
-            LaTeXST.append(['Cmd', '\item ' + str(line)])
-    LaTeXST.append(['Env', ['\end{' + _type + '}']])
-    return LaTeXST
+            LaTeX_ST.append(['Cmd', '\item ' + str(line)])
+    LaTeX_ST.append(['Env', ['\end{' + _type + '}']])
+    return LaTeX_ST
 
 
 def transFormula(AST):
@@ -96,7 +95,7 @@ def transFormula(AST):
                     s = i
         return [s, e]
 
-    LaTeXST = []
+    LaTeX_ST = []
     for line in AST[2]:
         text = line
         index = findZh(line)
@@ -107,8 +106,8 @@ def transFormula(AST):
             text += ("\mbox{" + line[index[0]:index[1] + 1] + "}")
             for i in range(index[1] + 1, len(line)):
                 text += line[i]
-        LaTeXST.append(['Text', text])
-    return LaTeXST
+        LaTeX_ST.append(['Text', text])
+    return LaTeX_ST
 
 # tabular=[
 #     "Tabular",

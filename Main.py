@@ -54,19 +54,25 @@ class MDFile:
         self.point -= line
 
     def remain(self):
-        if self.point + 1 == len(self.data):
+        if self.point + 1 >= len(self.data):
             return False
         else:
             return True
 
     def fReadln(self):
         self.point += 1
+        if self.point >= len(self.data):
+            return ""
         return self.data[self.point]
 
     def fReadNextln(self):
         self.point += 1
+        if self.point >= len(self.data):
+            return ""
         while self.data[self.point] == "":
             self.point += 1
+            if self.point >= len(self.data):
+                return ""
         return self.data[self.point]
 
 

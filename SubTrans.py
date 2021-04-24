@@ -1,3 +1,7 @@
+def divider(AST):
+    if AST[0] == 'Enumerate' or AST[0] == 'Itemize':
+         return transList(AST)
+
 def template(AST):
     LaTeXST = AST
     return LaTeXST
@@ -71,6 +75,20 @@ def transItemize(AST):
     for line in AST[2]:
         LaTeXST.append(['Cmd', '\item ' + str(line)])
     LaTeXST.append(['Env', ['\end{itemize}']])
+    return LaTeXST
+
+def transList(AST):
+    if AST[0] == 'Enumerate':
+        type = 'enumerate'
+    else:
+        type = 'itemize'
+    LaTeXST = [['Env', [type, '']]]
+    for line in AST[2]:
+        if type(line) == list:
+            LateXST += divider(line)
+        else:
+            LaTeXST.append(['Cmd', '\item ' + str(line)])
+    LaTeXST.append(['Env', ['\end' + type + '}']])
     return LaTeXST
 
 

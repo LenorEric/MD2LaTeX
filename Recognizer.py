@@ -3,7 +3,7 @@ import SubParser as SP
 
 
 def envRecognizer(tokens):
-    if not(tokens):
+    if not (tokens):
         return ["PlainText"]
     if tokens[0] == "#":
         return ["Part"]
@@ -28,6 +28,8 @@ def envRecognizer(tokens):
     else:
         return ["PlainText"]
 
+
+# asdf
 
 def parser(tokens, types):
     if types == "HTML":

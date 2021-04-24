@@ -11,6 +11,7 @@ def html(tokens):
         tag.append(iters.contents[0].name)
         con.append(iters.contents[0])
         iters = iters.contents[0]
+    print(tag)
     if "center" in tag:
         centering = 1
     else:

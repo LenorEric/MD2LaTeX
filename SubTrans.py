@@ -1,6 +1,8 @@
 def divider(AST):
     if AST[0] == 'Enumerate' or AST[0] == 'Itemize':
-         return transList(AST)
+        return transList(AST)
+    elif AST[0] == 'Image':
+        return transImage(AST)
 
 def template(AST):
     LaTeXST = AST

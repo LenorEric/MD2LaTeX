@@ -98,7 +98,7 @@ def compositorPrinter(LaTeX_SP):
         if line[0] == "Cmd":
             fPrintln(line[1])
         elif line[0] == "Env":
-            if type(line[1]) == str:
+            if len(line[1]) == 1:
                 endEnv()
             else:
                 newEnv(line[1][0], line[1][1])
@@ -109,7 +109,7 @@ def compositorPrinter(LaTeX_SP):
 def process():
     def specialProcesser(tokens, preEnv):
         buffer = [tokens]
-        while Recognizer.envRecognizer(buffer[len(buffer) - 1].split()) == ["Special", preEnv]:
+        while buffer[len(buffer)-1] != "":
             buffer.append(md.fReadln())
         if preEnv == "HTML":
             parse = Recognizer.parser(buffer, preEnv)

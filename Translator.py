@@ -16,7 +16,7 @@ def textRenderer(text):
         (r"\n", ""),
         (r"</a>", ""),
         (r'<a href=".*">', r""),
-        (r"</+?>", r"}"),
+        (r"</\w*>", r"}"),
         (r"<strong>", r"\\textbf{"),
         (r"<em>", r"\\textsl{"),
         (r"<del>", r"\\sout{"),

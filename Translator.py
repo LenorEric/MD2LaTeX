@@ -11,7 +11,7 @@ def textRenderer(text):
         text = text[1:]
     if text[len(text)-2:len(text)] == "  ":
         text += " \\newline"
-    text = "".join(map(str, BeautifulSoup(md(text), 'xml').contents[0].contents))
+    text = "".join(map(str, BeautifulSoup(md(text), 'lxml').contents[0].contents))
     replaceRules = (
         (r"\n", ""),
         (r"</a>", ""),
